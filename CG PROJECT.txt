@@ -1,0 +1,2771 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<GL/glut.h>
+int slide=0;
+int flag=1;
+int i;
+int xcar=0,xcarlimit=420;
+int x;
+float xbus=0,xbuslimit=-390;
+float cloudPositionX = 0.0f;
+float cloudSpeed = 2.0f;
+float manPosition1X = 0.0f;
+float manSpeed1 = 2.7f;
+float smokepositionY = 0.0f;
+float smokeSpeed = 3.0f;
+int xcar1=0,xcarlimit1=1346;
+int xcar2=-650,xcarlimit2=1346;
+float xbus1=0,xbuslimit1=-1346;
+float xbus2=700,xbuslimit2=-1346;
+float cloudPosition1X = 0.0f;
+float cloudSpeed1 = 2.0f;
+int traffic_regulator = 0;
+float p = 1.0, q = 1.0, r = 1.0;
+void update4(int value)//for man moving
+{
+manPosition1X += manSpeed1;
+if (manPosition1X > 1300)
+    manPosition1X = -3.0;
+
+glutPostRedisplay();
+glutTimerFunc(100, update4, 0);
+}
+void update2(int value)//for cloud moving
+{
+cloudPosition1X += cloudSpeed1;
+if (cloudPosition1X > 300)
+    cloudPosition1X = -3.0;
+
+glutPostRedisplay();
+glutTimerFunc(100, update2, 0);
+}
+void update3(int value)//for smoke moving
+{
+smokepositionY += smokeSpeed;
+if (smokepositionY> 100)
+    smokepositionY = -0.05;
+
+glutPostRedisplay();
+glutTimerFunc(100, update3, 0);
+}
+void update(int value)
+{
+cloudPositionX += cloudSpeed;
+if (cloudPositionX > 400)
+    cloudPositionX = -3.0;
+
+glutPostRedisplay();
+glutTimerFunc(100, update, 0);
+}
+void timer1(int v)//car1
+{
+if(xcar1>=xcarlimit1 && flag==1)
+xcar1=xcar1-xcarlimit1;
+else if(flag==1)
+xcar1+=10;
+
+
+glutPostRedisplay();
+glutTimerFunc(100,timer1,0);
+}
+
+
+void timer2(int v)//CAR2
+{
+
+if(xcar2>=xcarlimit2 && flag==1)
+xcar2=xcar2-xcarlimit2;
+else if(flag==1)
+xcar2+=10;
+
+glutPostRedisplay();
+glutTimerFunc(100,timer2,0);
+
+}
+
+void timer3(int v)//bus1
+{
+if(xbus1<=xbuslimit1 && flag==1)
+xbus1=xbus1-xbuslimit1;
+else if(flag==1)
+xbus1-=10;
+
+
+glutPostRedisplay();
+glutTimerFunc(100,timer3,0);
+}
+
+
+void timer6(int v)//bus2
+{
+
+if(xbus2<=xbuslimit2 && flag==1)
+xbus2=xbus2-xbuslimit2;
+else if(flag==1)
+xbus2-=10;
+
+
+glutPostRedisplay();
+glutTimerFunc(100,timer6,0);
+
+}
+
+void timer4(int v)//crash car
+{
+if(xcar>=xcarlimit){
+
+xcar=xcarlimit;
+
+}
+else
+xcar+=10;
+glutPostRedisplay();
+glutTimerFunc(100,timer4,0);
+}
+
+void timer5(int v)//crash bus
+{
+if(xbus<=xbuslimit)
+xbus=xbuslimit;
+else
+xbus-=10;
+glutPostRedisplay();
+glutTimerFunc(100,timer5,0);
+}
+
+
+
+//car
+
+void displaycar3(float x)
+{
+glColor3f(1.0,0.0,0.0);
+
+glBegin(GL_POLYGON);
+glVertex2i(x+160,420);
+glVertex2i(x+180,450);
+glVertex2i(x+260,450);
+glVertex2i(x+260,420);
+glEnd();
+
+
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+260,450);
+glVertex2i(x+300,420);
+glVertex2i(x+260,420);
+glEnd();
+
+
+glColor3f(1.0,0.0,0.0);
+glBegin(GL_POLYGON);//body
+glVertex2i(x+160,370);
+glVertex2i(x+300,370);
+glVertex2i(x+300,420);
+glVertex2i(x+160,420);
+glEnd();
+
+//windowfor car
+glColor3f(1.0,1.0,1.0);
+glBegin(GL_POLYGON);
+glVertex2i(x+200,420);
+glVertex2i(x+250,420);
+glVertex2i(x+250,448);
+glVertex2i(x+200,448);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+260,370,0);
+glutSolidSphere(17,100,50);
+glPopMatrix();
+
+
+
+glColor3f(0.0,0.0,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+190,370,0);
+glutSolidSphere(17,100,50);
+glPopMatrix();
+}
+void bus3(float x)
+{
+ 
+ //bus
+glPushMatrix();
+glColor3f(0.5, 0.0, 0.5);
+//bus lower
+glBegin(GL_POLYGON);
+glVertex2f(x+1100, 370);
+glVertex2f(x+1346, 370);
+glVertex2f(x+1346, 440);
+glVertex2f(x+1100, 440);
+glEnd();
+
+
+//bus top
+glBegin(GL_POLYGON);
+glVertex2f(x+1100, 440);
+glVertex2f(x+1346, 440);
+glVertex2f(x+1346, 500);
+glVertex2f(x+1150, 500);
+
+glEnd();
+
+glColor3f(0.0,0.0,0.7);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+1100,440);
+glVertex2i(x+1150,440);
+
+glVertex2i(x+1150,500);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+1170,370,0);
+
+glutSolidSphere(22,100,50);
+glPopMatrix();
+
+glColor3f(0.0,0.0,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+1300,370,0);
+
+glutSolidSphere(22,100,50);
+glPopMatrix();
+glEnd();
+//door
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(x+1160, 480);
+glVertex2f(x+1195, 480);
+glVertex2f(x+1195, 400);
+glVertex2f(x+1160, 400);
+glEnd();
+ 
+ 
+ //window frame
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(x+1200, 450);
+glVertex2f(x+1340, 450);
+glVertex2f(x+1340, 490);
+glVertex2f(x+1200, 490);
+glEnd();
+glPushMatrix();
+glColor3f(0.0, 0.0, 0.0);
+glBegin(GL_LINES);
+glVertex2f(x+1235, 490);
+glVertex2f(x+1235, 450);
+glVertex2f(x+1270, 490);
+glVertex2f(x+1270, 450);
+glVertex2f(x+1305, 490);
+glVertex2f(x+1305, 450);
+glPopMatrix();
+glEnd();
+}
+
+void smoke()
+{
+glColor3f(0.4,0.4,0.4);//smoke
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(700,450+smokepositionY,0);
+glutSolidSphere(13,100,50);
+glPopMatrix();
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(709,465+smokepositionY,0);
+glutSolidSphere(13,100,50);
+glPopMatrix();
+
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(690,465+smokepositionY,0);
+
+
+glutSolidSphere(13,100,50);
+glPopMatrix();
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(695,480+smokepositionY,0);
+glutSolidSphere(13,100,50);
+glPopMatrix();
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(705,485+smokepositionY,0);
+glutSolidSphere(13,100,50);
+glPopMatrix();
+glEnd();
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(705,500+smokepositionY,0);
+glutSolidSphere(10,100,50);
+glPopMatrix();
+glEnd();
+//2nd smoke
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(720,520+smokepositionY,0);
+
+glutSolidSphere(7,100,50);
+glPopMatrix();
+glEnd();
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(727,528+smokepositionY,0);
+
+glutSolidSphere(7,100,50);
+glPopMatrix();
+glEnd();
+
+
+
+
+
+
+}
+
+
+void displaycar0(float x)
+{
+
+glColor3f(1.0,0.0,0.0);
+
+glBegin(GL_POLYGON);
+glVertex2i(x+160,70);
+glVertex2i(x+180,110);
+glVertex2i(x+260,110);
+glVertex2i(x+260,70);
+glEnd();
+
+
+
+
+
+
+
+
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+260,110);
+glVertex2i(x+300,70);
+
+glVertex2i(x+260,70);
+glEnd();
+
+
+glColor3f(1.0,0.0,0.0);
+glBegin(GL_POLYGON);//body
+glVertex2i(x+160,30);
+glVertex2i(x+300,30);
+glVertex2i(x+300,70);
+glVertex2i(x+160,70);
+glEnd();
+
+//windowfor car
+glColor3f(1.0,1.0,1.0);
+glBegin(GL_POLYGON);
+glVertex2i(x+190,70);
+glVertex2i(x+250,70);
+glVertex2i(x+250,105);
+glVertex2i(x+190,105);
+glEnd();
+
+
+
+glColor3f(1.0,0.8,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+260,30,0);
+
+glutSolidSphere(17,100,50);
+glPopMatrix();
+
+
+
+glColor3f(1.0,0.8,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+190,30,0);
+
+glutSolidSphere(17,100,50);
+glPopMatrix();
+
+}
+
+void displaycar1(float x)
+{
+
+glColor3f(1.0,0.0,0.0);
+
+glBegin(GL_POLYGON);
+glVertex2i(x+160,280);
+glVertex2i(x+180,320);
+glVertex2i(x+260,320);
+glVertex2i(x+260,280);
+glEnd();
+
+
+
+
+
+
+
+
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+260,320);
+glVertex2i(x+300,280);
+
+glVertex2i(x+260,280);
+glEnd();
+
+
+glColor3f(1.0,0.0,0.0);
+glBegin(GL_POLYGON);//body
+glVertex2i(x+160,240);
+glVertex2i(x+300,240);
+glVertex2i(x+300,280);
+glVertex2i(x+160,280);
+glEnd();
+
+//windowfor car
+glColor3f(1.0,1.0,1.0);
+glBegin(GL_POLYGON);
+glVertex2i(x+190,280);
+glVertex2i(x+250,280);
+glVertex2i(x+250,315);
+glVertex2i(x+190,315);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+260,240,0);
+
+glutSolidSphere(17,100,50);
+glPopMatrix();
+
+
+
+glColor3f(0.0,0.0,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+190,240,0);
+
+glutSolidSphere(17,100,50);
+glPopMatrix();
+
+}
+
+
+
+void displaycar2(float x)
+{
+
+
+glColor3f(0.5,0.1,0.0);
+
+glBegin(GL_POLYGON);
+glVertex2i(x+160,280);
+glVertex2i(x+180,320);
+glVertex2i(x+260,320);
+glVertex2i(x+260,280);
+glEnd();
+
+
+
+
+
+
+
+
+glColor3f(0.0,0.0,0.7);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+260,320);
+glVertex2i(x+300,280);
+
+glVertex2i(x+260,280);
+glEnd();
+
+
+glColor3f(0.5,0.1,0.0);
+glBegin(GL_POLYGON);//body
+glVertex2i(x+160,240);
+glVertex2i(x+300,240);
+glVertex2i(x+300,280);
+glVertex2i(x+160,280);
+glEnd();
+
+//windowfor car
+glColor3f(1.0,1.0,1.0);
+glBegin(GL_POLYGON);
+glVertex2i(x+200,280);
+glVertex2i(x+250,280);
+glVertex2i(x+250,315);
+glVertex2i(x+200,315);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+260,240,0);
+
+glutSolidSphere(17,100,50);
+glPopMatrix();
+
+
+
+glColor3f(0.0,0.0,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+190,240,0);
+
+glutSolidSphere(17,100,50);
+glPopMatrix();
+}
+
+void bus1(float x)
+ {
+ 
+  glPushMatrix();
+glColor3f(0.5, 0.0, 0.5);
+//bus lower
+glBegin(GL_POLYGON);
+glVertex2f(x+1100, 370);
+glVertex2f(x+1346, 370);
+glVertex2f(x+1346, 440);
+glVertex2f(x+1100, 440);
+
+glEnd();
+
+
+//bus top
+glBegin(GL_POLYGON);
+glVertex2f(x+1100, 440);
+glVertex2f(x+1346, 440);
+glVertex2f(x+1346, 500);
+glVertex2f(x+1150, 500);
+
+glEnd();
+
+glColor3f(0.0,0.0,0.7);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+1100,440);
+glVertex2i(x+1150,440);
+
+glVertex2i(x+1150,500);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+1170,370,0);
+
+glutSolidSphere(22,100,50);
+glPopMatrix();
+
+glColor3f(0.0,0.0,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+1300,370,0);
+
+glutSolidSphere(22,100,50);
+glPopMatrix();
+glEnd();
+//door
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(x+1160, 480);
+glVertex2f(x+1195, 480);
+glVertex2f(x+1195, 400);
+glVertex2f(x+1160, 400);
+glEnd();
+ 
+ 
+ //window frame
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(x+1200, 450);
+glVertex2f(x+1340, 450);
+glVertex2f(x+1340, 490);
+glVertex2f(x+1200, 490);
+glEnd();
+glPushMatrix();
+glColor3f(0.0, 0.0, 0.0);
+glBegin(GL_LINES);
+glVertex2f(x+1235, 490);
+glVertex2f(x+1235, 450);
+glVertex2f(x+1270, 490);
+glVertex2f(x+1270, 450);
+glVertex2f(x+1305, 490);
+glVertex2f(x+1305, 450);
+glPopMatrix();
+glEnd();
+
+
+glFlush();
+}
+
+void bus2(float x)
+{
+glPushMatrix();
+glColor3f(1.0, 0.0, 0.5);
+//bus lower
+glBegin(GL_POLYGON);
+glVertex2f(x+1100, 370);
+glVertex2f(x+1346, 370);
+glVertex2f(x+1346, 440);
+glVertex2f(x+1100, 440);
+
+glEnd();
+
+
+//bus top
+glBegin(GL_POLYGON);
+glVertex2f(x+1100, 440);
+glVertex2f(x+1346, 440);
+glVertex2f(x+1346, 500);
+glVertex2f(x+1150, 500);
+
+glEnd();
+
+glColor3f(0.0,0.0,0.7);
+glBegin(GL_POLYGON);//frontglass
+glVertex2i(x+1100,440);
+glVertex2i(x+1150,440);
+
+glVertex2i(x+1150,500);
+glEnd();
+
+glColor3f(0.0,0.0,0.0);//front tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+1170,370,0);
+
+glutSolidSphere(22,100,50);
+glPopMatrix();
+
+glColor3f(0.0,0.0,0.0);//back tyre
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(x+1300,370,0);
+
+glutSolidSphere(22,100,50);
+glPopMatrix();
+glEnd();
+//door
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(x+1160, 480);
+glVertex2f(x+1195, 480);
+glVertex2f(x+1195, 400);
+glVertex2f(x+1160, 400);
+glEnd();
+ 
+ 
+ //window frame
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(x+1200, 450);
+glVertex2f(x+1340, 450);
+glVertex2f(x+1340, 490);
+glVertex2f(x+1200, 490);
+glEnd();
+glPushMatrix();
+glColor3f(0.0, 0.0, 0.0);
+glBegin(GL_LINE);
+glVertex2f(x+1235, 490);
+glVertex2f(x+1235, 450);
+glPopMatrix();
+glColor3f(0.0, 0.0, 0.0);
+glBegin(GL_LINES);
+glVertex2f(x+1235, 490);
+glVertex2f(x+1235, 450);
+glVertex2f(x+1270, 490);
+glVertex2f(x+1270, 450);
+glVertex2f(x+1305, 490);
+glVertex2f(x+1305, 450);
+glPopMatrix();
+glEnd();
+}
+
+void myMouse(int button, int state, int x, int y)
+{
+if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN )
+{
+flag=0;
+traffic_regulator = 0;
+p = 1;
+q = 0;
+r = 0;
+}
+
+if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+{
+flag = 1;
+traffic_regulator = 0;
+p = 0;
+q = 1;
+r = 0;
+}
+if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+{
+traffic_regulator = 1;
+p = 0;
+q = 0;
+r = 1;
+}
+glutPostRedisplay();
+
+
+
+
+}
+
+
+
+
+void output(char *s)
+{
+int k;
+for(k=0;k<strlen(s);k++)
+
+glutStrokeCharacter(GLUT_STROKE_ROMAN,s[k]);
+
+}
+void first()
+{
+
+glClear(GL_COLOR_BUFFER_BIT);
+
+glClearColor(1.0,1.0,1.0,0.0);
+glColor3f(1.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(20.0,30.0,0.0);
+glScalef(0.1,0.1,0.0);
+
+glPopMatrix();
+glColor3f(0.0,0.0,1.0);
+glPushMatrix();
+glTranslatef(20.0,680.0,0.0);
+glScalef(0.35,0.42,0.0);
+
+output("MANGALORE INSTITUTE OF TECHNOLOGY & ENGINEERING");
+glPopMatrix();
+glColor3f(1.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(200.0,600.0,0.0);
+glScalef(0.3,0.35,0.0);
+output("DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING ");
+glPopMatrix();
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(370.0,500.0,0.0);
+glScalef(0.27,0.27,0.0);
+output("COMPUTER GRAPHICS MINI PROJECT ");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(590.0,450.0,0.0);
+glScalef(0.27,0.27,0.0);
+output(" ON ");
+glPopMatrix();
+glColor3f(1.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(420.0,400.0,0.0);
+glScalef(0.27,0.27,0.0);
+output("ROAD SAFETY MEASURES");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(100.0,300.0,0.0);
+glScalef(0.19,0.19,0.0);
+output("KEERTHAN HEBBAR\n");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(100.0,250.0,0.0);
+glScalef(0.19,0.19,0.0);
+output("4MT20CS085");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(970.0,300.0,0.0);
+glScalef(0.19,0.19,0.0);
+output("PRASIDDHI PRAKASH NAYAK\n");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(1100.0,250.0,0.0);
+glScalef(0.19,0.19,0.0);
+output("4MT20CS118");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(500.0,200.0,0.0);
+glScalef(0.19,0.19,0.0);
+output("UNDER THE GUIDANCE OF");
+glPopMatrix();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(530.0,150.0,0.0);
+glScalef(0.19,0.19,0.0);
+output("MS SUNITHA N V");
+glPopMatrix();
+
+
+
+//straight road
+glColor3f(0.0,0.0,0.0);
+ glBegin(GL_POLYGON);
+glVertex2f(0,0);
+glVertex2f(1346,0);
+glVertex2f(1346,50);
+ glVertex2f(0,50);
+  glEnd();
+//signal box  
+ glColor3f(0.0,0.0,0.0);
+ glBegin(GL_POLYGON);
+glVertex2f(900,100);
+glVertex2f(940,100);
+glVertex2f(940,190);
+ glVertex2f(900,190);
+  glEnd();  
+ 
+glColor3f(1.0,0.0,0.0);//red
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(919,175,0);
+
+glutSolidSphere(11,100,50);
+glPopMatrix();  
+ glEnd();
+ 
+  glColor3f(1.0,1.0,0.0);//yellow
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(919,147,0);
+
+glutSolidSphere(11,100,50);
+glPopMatrix();
+
+
+
+glColor3f(0.0,1.0,0.0);//green
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();
+glTranslatef(919,120,0);
+
+glutSolidSphere(11,100,50);
+glPopMatrix();
+
+
+//pole
+glColor3f(0.0,0.0,0.0);
+ glBegin(GL_POLYGON);
+glVertex2f(915,100);
+glVertex2f(915,50);
+glVertex2f(925,50);
+ glVertex2f(925,100);
+  glEnd();
+
+
+//white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(0,25);
+glVertex2f(100,25);
+glVertex2f(100,29);
+ glVertex2f(0,29);
+  glEnd();
+ 
+  //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(150,25);
+glVertex2f(250,25);
+glVertex2f(250,29);
+ glVertex2f(150,29);
+  glEnd();
+ 
+  //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(300,25);
+glVertex2f(400,25);
+glVertex2f(400,29);
+ glVertex2f(300,29);
+  glEnd();
+ 
+ 
+  //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(450,25);
+glVertex2f(550,25);
+glVertex2f(550,29);
+ glVertex2f(450,29);
+  glEnd();
+ 
+ 
+  //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(600,25);
+glVertex2f(700,25);
+glVertex2f(700,29);
+ glVertex2f(600,29);
+  glEnd();
+ 
+ 
+    //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(750,25);
+glVertex2f(850,25);
+glVertex2f(850,29);
+ glVertex2f(750,29);
+  glEnd();
+
+
+  //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(900,25);
+glVertex2f(1000,25);
+glVertex2f(1000,29);
+ glVertex2f(900,29);
+  glEnd();
+
+
+  //white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(1050,25);
+glVertex2f(1150,25);
+glVertex2f(1150,29);
+ glVertex2f(1050,29);
+  glEnd();
+
+
+//white divider
+glColor3f(1.0,1.0,1.0);
+ glBegin(GL_POLYGON);
+glVertex2f(1200,25);
+glVertex2f(1300,25);
+glVertex2f(1300,29);
+ glVertex2f(1200,29);
+  glEnd();
+
+
+ 
+displaycar0(x);
+glutSwapBuffers();
+}
+void second()//tips
+{
+glClearColor(1.0, 0.8, 0.9,0.0);
+glColor3f(0.0,0.0,1.0);
+glPushMatrix();
+glTranslatef(570.0,680.0,0.0);
+glScalef(0.35,0.42,0.0);
+
+output("TIPS");
+glPopMatrix();
+glColor3f(1.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(200.0,600.0,0.0);
+glScalef(0.3,0.35,0.0);
+output("Stop the traffic (Red Light) MOUSE LEFT CLICK");
+glPopMatrix();
+glPushMatrix();
+glTranslatef(200.0,400.0,0.0);
+glScalef(0.3,0.35,0.0);
+output("Yellow Signal MOUSE RIGHT BUTTON (HOLD ON)");
+glPopMatrix();
+glPushMatrix();
+glTranslatef(200.0,200.0,0.0);
+glScalef(0.3,0.35,0.0);
+output("Green Signal MOUSE RIGHT BUTTON (RELEASE)");
+glPopMatrix();
+glEnd();
+glutSwapBuffers();
+
+}
+void third()
+{
+
+glClear(GL_COLOR_BUFFER_BIT);
+glColor3f(1.0,0.0,0.0);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+glPushMatrix();//1st sign
+glTranslatef(100,450,0);
+glutSolidSphere(70,100,50);
+glPopMatrix();
+
+glColor3f(1.0,1.0,1.0);
+glPushMatrix();
+glTranslatef(100,450,0);
+glutSolidSphere(55,100,50);
+glPopMatrix();
+
+
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(300.0,600.0,0.0);
+glScalef(0.8,0.5,0.0);
+
+output("TRAFFIC SIGNS");
+glPopMatrix();
+
+
+
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(67.0,430.0,0.0);
+glScalef(0.5,0.5,0.0);
+
+output("30");
+glPopMatrix();
+
+
+
+
+
+    glColor3f(1.0,0.0,0.0);//2nd
+    glPushMatrix();
+glTranslatef(400,450,0);
+glutSolidSphere(70,100,50);
+glPopMatrix();
+
+glColor3f(1.0,1.0,1.0);
+glPushMatrix();
+glTranslatef(400,450,0);
+glutSolidSphere(55,100,50);
+glPopMatrix();
+
+
+
+glColor3f(1.0,0.0,0.0);
+glBegin(GL_POLYGON);
+glVertex2f(437,490);
+glVertex2f(449,485);
+glVertex2f(358,395);
+glVertex2f(347,405);
+glEnd();
+
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(380.0,420.0,0.0);
+glScalef(0.7,0.6,0.0);
+
+output("P");
+glPopMatrix();
+
+
+
+
+    glColor3f(1.0,0.0,0.0);//3rd
+    glPushMatrix();
+glTranslatef(700,450,0);
+glutSolidSphere(70,100,50);
+glPopMatrix();
+
+
+
+
+
+
+
+
+
+glColor3f(1.0,1.0,1.0);
+glPushMatrix();
+glTranslatef(700,450,0);
+glutSolidSphere(55,100,50);
+glPopMatrix();
+
+
+glColor3f(0.0,0.0,0.0);//LEFT SWIGN
+glBegin(GL_POLYGON);
+glVertex2f(713,410);
+glVertex2f(727,410);
+glVertex2f(727,470);
+glVertex2f(713,470);
+glEnd();
+
+
+glColor3f(0.0,0.0,0.0);//LEFT SWIGN
+glBegin(GL_POLYGON);
+glVertex2f(670,470);
+glVertex2f(720,470);
+glVertex2f(720,456);
+glVertex2f(670,456);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);//LEFT ARROW
+glBegin(GL_POLYGON);
+glVertex2f(670,475);
+glVertex2f(670,450);
+glVertex2f(655,463);
+
+glEnd();
+
+
+
+
+glColor3f(1.0,0.0,0.0);//DIAGONAL
+glBegin(GL_POLYGON);
+glVertex2f(737,490);
+glVertex2f(749,485);
+glVertex2f(658,395);
+glVertex2f(647,405);
+glEnd();
+
+
+
+glColor3f(1.0,1.0,1.0);//stop
+glBegin(GL_POLYGON);
+glVertex2f(900,450);
+glVertex2f(950,500);
+glVertex2f(1050,500);
+glVertex2f(1100,450);
+glVertex2f(1100,400);
+glVertex2f(1050,350);
+glVertex2f(950,350);
+glVertex2f(900,400);
+glEnd();
+
+glColor3f(1.0,0.0,0.0);//inner stop
+glBegin(GL_POLYGON);
+glVertex2f(910,450);
+glVertex2f(950,490);
+glVertex2f(1050,490);
+glVertex2f(1090,450);
+glVertex2f(1090,400);
+glVertex2f(1050,360);
+glVertex2f(950,360);
+glVertex2f(910,400);
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(930.0,420.0,0.0);
+glScalef(0.4,0.4,0.0);
+
+output("STOP");
+glPopMatrix();
+
+
+
+glColor3f(1.0,0.0,0.0);// 0utertriangle
+glBegin(GL_POLYGON);
+glVertex2f(90,210);
+glVertex2f(310,210);
+glVertex2f(200,90);
+glEnd();
+
+glColor3f(1.0,1.0,1.0);//triangle
+glBegin(GL_POLYGON);
+glVertex2f(110,200);
+glVertex2f(290,200);
+glVertex2f(200,107);
+glEnd();
+
+glColor3f(1.0,0.5,0.0);//dead end
+glBegin(GL_POLYGON);
+glVertex2f(500,150);
+glVertex2f(600,250);
+glVertex2f(700,150);
+glVertex2f(600,50);
+glEnd();
+
+glColor3f(0.0,0.0,0.0);
+//LINEWIDTH(3.0);
+glBegin(GL_LINE_LOOP);
+glVertex2f(500,150);
+glVertex2f(600,250);
+glVertex2f(700,150);
+glVertex2f(600,50);
+glEnd();
+
+
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(536.0,150.0,0.0);
+glScalef(0.2,0.2,0.0);
+
+output("DEAD END");
+glPopMatrix();
+
+
+
+
+
+
+glColor3f(0.0,1.0,0.0);//go
+glBegin(GL_POLYGON);
+glVertex2f(900,200);
+glVertex2f(950,250);
+glVertex2f(1050,250);
+glVertex2f(1100,200);
+glVertex2f(1100,150);
+glVertex2f(1050,100);
+glVertex2f(950,100);
+glVertex2f(900,150);
+
+glEnd();
+
+
+
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(950.0,150.0,0.0);
+glScalef(0.6,0.6,0.0);
+
+output("GO");
+glPopMatrix();
+   
+   glutSwapBuffers();
+}
+void fourth(){
+glClear(GL_COLOR_BUFFER_BIT);
+
+//cyan
+  glBegin(GL_POLYGON);
+   glColor3f(0.0,0.8,1.0);
+  glVertex2i(0,400);
+   glColor3f(0.0,1.0,1.0);
+  glVertex2i(1346,400);
+   glColor3f(0.0,0.8,1.0);
+  glVertex2i(1346,728);
+   glColor3f(0.0,1.0,1.0);
+  glVertex2i(0,728);
+  glEnd();
+ 
+ 
+ 
+  glColor3f(1.0,1.0,1.0); //cloud1
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(18,100,50);
+  glTranslatef(170 + cloudPositionX, 680, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(180 + cloudPositionX, 700, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(200 + cloudPositionX,680 , 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+ glTranslatef(155 + cloudPositionX, 700, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(135 + cloudPositionX, 700, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();  
+  glPushMatrix();
+  glTranslatef(105 + cloudPositionX, 687, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(125 + cloudPositionX, 665, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(150 + cloudPositionX, 665, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(175 + cloudPositionX, 665, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(125 + cloudPositionX, 675, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(150 + cloudPositionX, 680, 0);
+  glutSolidSphere(10,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(175 + cloudPositionX, 690, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+ 
+ 
+ 
+    glColor3f(1.0,1.0,1.0); //cloud2
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(18,100,50);
+  glTranslatef(600 + cloudPositionX, 675, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(608 + cloudPositionX, 698, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(670+ cloudPositionX,685 , 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+ glTranslatef(630 + cloudPositionX, 700, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(655 + cloudPositionX, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();  
+  glPushMatrix();
+  glTranslatef(650 + cloudPositionX, 700, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(630 + cloudPositionX, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(590 + cloudPositionX, 678, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(614 + cloudPositionX, 668, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+ 
+ 
+    glColor3f(1.0,1.0,1.0); //cloud3
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  glPushMatrix();
+ glTranslatef(1020 + cloudPositionX, 690, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(1020 + cloudPositionX, 650, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(1060 + cloudPositionX, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();  
+ 
+  glPushMatrix();
+  glTranslatef(1050 + cloudPositionX, 690, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(1050 + cloudPositionX, 650, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(1030 + cloudPositionX, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(1075 + cloudPositionX, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1000 + cloudPositionX, 668, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+ 
+
+
+
+//straight road
+glColor3f(0.4,0.4,0.45);
+ glBegin(GL_POLYGON);
+glVertex2f(0,200);
+glVertex2f(1500,200);
+glVertex2f(1500,400);
+ glVertex2f(0,400);
+  glEnd();
+ 
+ 
+ 
+  //white1 on road
+  glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(0, 280);
+glVertex2f(350, 280);
+glVertex2f(350, 300);
+glVertex2f(0, 300);
+glEnd();
+
+//zebra crossing
+
+
+/*glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(550, 360);
+glVertex2f(900, 360);
+glVertex2f(900, 380);
+glVertex2f(550, 380);
+glEnd();
+
+
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(550, 320);
+glVertex2f(900, 320);
+glVertex2f(900, 340);
+glVertex2f(550, 340);
+glEnd();
+*/
+
+  glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(550, 280);
+glVertex2f(900, 280);
+glVertex2f(900, 300);
+glVertex2f(550, 300);
+glEnd();
+
+
+
+/*
+glColor3f(1.0, 1.0, 1.0);
+glBegin(GL_POLYGON);
+glVertex2f(550, 240);
+glVertex2f(900, 240);
+glVertex2f(900, 260);
+glVertex2f(550, 260);
+glEnd();
+*/
+
+
+
+
+//white3 on road
+  glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(1100, 280);
+glVertex2f(1500, 280);
+glVertex2f(1500, 300);
+glVertex2f(1100, 300);
+glEnd();
+ 
+
+ 
+ 
+ 
+  //void mud polygon ()
+
+glColor4f(0.7,0.6,0.1,0.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,0);
+glVertex2f(1500,0);
+glVertex2f(1500,200);
+ glVertex2f(0,200);
+  glEnd();
+ 
+ 
+   
+    glColor3f(0.0,0.0,0.0);//ALWAYS FOR THE TRAFFIC SIGANL
+glPushMatrix();
+glTranslatef(530,600,0.0);
+//glTranslatef(10,100,0.0);
+glScalef(0.30,0.30,0);
+output("ALWAYS FOLLOW THE  TRAFFIC SIGNAL");
+glPopMatrix();
+ 
+ 
+  glColor3f(0.0,1.0,0.0); //bush green1
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+  glutSolidSphere(30,100,50);
+ glTranslatef(170 , 10, 0);
+  glPopMatrix();
+   glPushMatrix();
+  glutSolidSphere(30,100,50);
+ glTranslatef(220 , 10, 0);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(270 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(320 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(250 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(295 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(220 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();//egde bush
+  glTranslatef(5 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(25,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+ 
+    glColor3f(0.0,1.0,0.0); //bush green2
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(30,100,50);
+ glTranslatef(450 , 10, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(500 , 15, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(550 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(600 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(525 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(575 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+ 
+    glColor3f(0.0,1.0,0.0); //bush green3
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(30,100,50);
+ glTranslatef(800, 10, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(850 , 15, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(900 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(950 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(875 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(925 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+    glColor3f(0.0,1.0,0.0); //bush green4
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(30,100,50);
+ glTranslatef(1150 , 10, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1200 , 15, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1250 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1300,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1225 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1275 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+ 
+ 
+//side of the road
+  glColor3f(0.0,0.0,0.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,170);
+glVertex2f(1500,170);
+glVertex2f(1500,200);
+ glVertex2f(0,200);
+  glEnd();
+ 
+     
+//side of the road
+  glColor3f(0.0,0.0,0.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,400);
+glVertex2f(1500,400);
+glVertex2f(1500,430);
+ glVertex2f(0,430);
+  glEnd();
+ 
+ 
+ 
+  //footpath black and white
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,170);
+glVertex2f(100,170);
+glVertex2f(100,200);
+ glVertex2f(0,200);
+  glEnd();
+ 
+ 
+ 
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(200,170);
+glVertex2f(300,170);
+glVertex2f(300,200);
+ glVertex2f(200,200);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(400,170);
+glVertex2f(500,170);
+glVertex2f(500,200);
+ glVertex2f(400,200);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(600,170);
+glVertex2f(700,170);
+glVertex2f(700,200);
+ glVertex2f(600,200);
+  glEnd();
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(800,170);
+glVertex2f(900,170);
+glVertex2f(900,200);
+ glVertex2f(800,200);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1000,170);
+glVertex2f(1100,170);
+glVertex2f(1100,200);
+ glVertex2f(1000,200);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1200,170);
+glVertex2f(1346,170);
+glVertex2f(1346,200);
+ glVertex2f(1200,200);
+  glEnd();
+ 
+ 
+   //footpath black and white top
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,400);
+glVertex2f(100,400);
+glVertex2f(100,430);
+ glVertex2f(0,430);
+  glEnd();
+ 
+ 
+ 
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(200,400);
+glVertex2f(300,400);
+glVertex2f(300,430);
+ glVertex2f(200,430);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(400,400);
+glVertex2f(500,400);
+glVertex2f(500,430);
+ glVertex2f(400,430);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(600,400);
+glVertex2f(700,400);
+glVertex2f(700,430);
+ glVertex2f(600,430);
+  glEnd();
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(800,400);
+glVertex2f(900,400);
+glVertex2f(900,430);
+ glVertex2f(800,430);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1000,400);
+glVertex2f(1100,400);
+glVertex2f(1100,430);
+ glVertex2f(1000,430);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1200,400);
+glVertex2f(1346,400);
+glVertex2f(1346,430);
+ glVertex2f(1200,430);
+  glEnd();
+ 
+ 
+ 
+
+   //signal()
+
+glPushMatrix();
+glScaled(40.0, 40.0, 0.0);
+//stand
+glColor3f(0.2, 0.2, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(10, 10);
+glVertex2f(10, 11);
+glVertex2f(13, 11);
+glVertex2f(13, 10);
+glEnd();
+//pole
+glBegin(GL_POLYGON);
+glVertex2f(11, 10);
+glVertex2f(12, 10);
+glVertex2f(12, 18);
+glVertex2f(11, 18);
+glEnd();
+//board
+glBegin(GL_POLYGON);
+glVertex2f(10.5, 18);
+glVertex2f(12.5, 18);
+glVertex2f(12.5, 13);
+glVertex2f(10.5, 13);
+glEnd();
+//red
+glColor3f(p, 0.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(11, 17.5);
+glVertex2f(12, 17.5);
+glVertex2f(12, 17);
+glVertex2f(11, 17);
+glEnd();
+//yellow
+glColor3f(q, q, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(11, 16.5);
+glVertex2f(12, 16.5);
+glVertex2f(12, 16);
+glVertex2f(11, 16);
+glEnd();
+//green
+glColor3f(0.0, r, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(11, 15.5);
+glVertex2f(12, 15.5);
+glVertex2f(12, 15);
+glVertex2f(11, 15);
+glEnd();
+glPopMatrix();
+
+
+
+
+   
+   
+     
+   displaycar1(xcar1);
+     
+   displaycar2(xcar2);
+   bus1(xbus1);
+   bus2(xbus2);
+   
+    //man
+
+glColor3f(0.0,0.0,1.0);//pant blue
+glBegin(GL_POLYGON);
+glVertex2f(138+ manPosition1X,210);
+glVertex2f(138+ manPosition1X,180);
+glVertex2f(150+ manPosition1X,180);
+glVertex2f(160+ manPosition1X,210);
+glEnd();
+glColor3f(0.0,0.0,1.0);//pant blue
+glBegin(GL_POLYGON);
+glVertex2f(160+ manPosition1X,210);
+glVertex2f(170+ manPosition1X,180);
+glVertex2f(180+ manPosition1X,180);
+glVertex2f(180+ manPosition1X,210);
+glEnd();
+glColor3f(1.0,0.0,1.0);//man shoes
+glBegin(GL_POLYGON);
+glVertex2f(140+ manPosition1X,180);
+glVertex2f(132+ manPosition1X,170);
+glVertex2f(157+ manPosition1X,170);
+glVertex2f(150+ manPosition1X,180);
+glEnd();
+glColor3f(1.0,0.0,1.0);//man shoes2
+glBegin(GL_POLYGON);
+glVertex2f(170+ manPosition1X,180);
+glVertex2f(162+ manPosition1X,170);
+glVertex2f(187+ manPosition1X,170);
+glVertex2f(180+ manPosition1X,180);
+glEnd();
+
+glColor3f(0.0,1.0,0.0);//top green
+glBegin(GL_POLYGON);
+glVertex2f(135+ manPosition1X,210);
+glVertex2f(182+ manPosition1X,210);
+glVertex2f(170+ manPosition1X,250);
+glVertex2f(150+ manPosition1X,250);
+glEnd();
+
+  glColor3f(1.0, 0.8, 0.9); //face
+    glPushMatrix();
+    glTranslatef(160+ manPosition1X, 255, 0);
+    glutSolidSphere(15, 100, 50);
+    glPopMatrix();
+   
+    glColor3f(0.0, 0.0, 0.0); //eye1
+    glPushMatrix();
+    glTranslatef(156+ manPosition1X,257, 0);
+    glutSolidSphere(2.0, 100, 50);
+    glPopMatrix();
+   
+   
+    glColor3f(0.0, 0.0, 0.0); //eye2
+    glPushMatrix();
+    glTranslatef(164+ manPosition1X,257, 0);
+    glutSolidSphere(2.0, 100, 50);
+    glPopMatrix();
+    glEnd();
+    glColor3f(0.0,0.0,0.0);//HAIR
+glBegin(GL_POLYGON);
+glVertex2f(140+ manPosition1X,265);
+glVertex2f(180+ manPosition1X,265);
+glVertex2f(173+ manPosition1X,280);
+glVertex2f(165+ manPosition1X,280);
+glEnd();
+
+
+//mouth
+ glColor3f(1.0, 0.0, 0.0);
+glBegin(GL_LINES);
+glVertex2f(155+ manPosition1X,247);
+glVertex2f(165+ manPosition1X,247);
+glEnd();
+
+
+glColor3f(1.0, 0.8, 0.9); //hand color
+glBegin(GL_POLYGON);
+glVertex2f(135 + manPosition1X, 210);
+glVertex2f(130 + manPosition1X, 195);
+glVertex2f(135 + manPosition1X, 185);
+glVertex2f(140 + manPosition1X, 195);
+glEnd();
+
+glColor3f(1.0, 0.8, 0.9); //hand color
+glBegin(GL_POLYGON);
+glVertex2f(182 + manPosition1X, 210);
+glVertex2f(187 + manPosition1X, 195);
+glVertex2f(182 + manPosition1X, 185);
+glVertex2f(177 + manPosition1X, 195);
+glEnd();
+
+
+
+
+
+
+
+ 
+   
+   glutSwapBuffers();
+ 
+}
+void fifth()
+{
+
+glClear(GL_COLOR_BUFFER_BIT);
+glBegin(GL_POLYGON);
+   glColor3f(0.0,0.8,1.0);
+  glVertex2i(0,400);
+   glColor3f(0.0,1.0,1.0);
+  glVertex2i(1346,400);
+   glColor3f(0.0,0.8,1.0);
+  glVertex2i(1346,728);
+   glColor3f(0.0,1.0,1.0);
+  glVertex2i(0,728);
+  glEnd();
+
+
+ 
+ 
+  glColor3f(1.0,1.0,1.0); //cloud1
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(18,100,50);
+  glTranslatef(170 + cloudPosition1X, 680, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(180 + cloudPosition1X, 700, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(200 + cloudPosition1X,680 , 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+ glTranslatef(155 + cloudPosition1X, 700, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(135 + cloudPosition1X, 700, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();  
+  glPushMatrix();
+  glTranslatef(105 + cloudPosition1X, 687, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(125 + cloudPosition1X, 665, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(150 + cloudPosition1X, 665, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(175 + cloudPosition1X, 665, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(125 + cloudPosition1X, 675, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(150 + cloudPosition1X, 680, 0);
+  glutSolidSphere(10,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(175 + cloudPosition1X, 690, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+ 
+ 
+    glColor3f(1.0,1.0,1.0); //cloud2
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(18,100,50);
+  glTranslatef(600 + cloudPosition1X, 675, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(608 + cloudPosition1X, 698, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(670+ cloudPosition1X,685 , 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+ glTranslatef(630 + cloudPosition1X, 700, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(655 + cloudPosition1X, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();  
+  glPushMatrix();
+  glTranslatef(650 + cloudPosition1X, 700, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(630 + cloudPosition1X, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(590 + cloudPosition1X, 678, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(614 + cloudPosition1X, 668, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+ 
+ 
+    glColor3f(1.0,1.0,1.0); //cloud3
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  glPushMatrix();
+ glTranslatef(1020 + cloudPosition1X, 690, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(1020 + cloudPosition1X, 650, 0);
+ glutSolidSphere(18,100,50);
+ glPopMatrix();
+ glPushMatrix();
+ glTranslatef(1060 + cloudPosition1X, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();  
+ 
+  glPushMatrix();
+  glTranslatef(1050 + cloudPosition1X, 690, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(1050 + cloudPosition1X, 650, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(1030 + cloudPosition1X, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(1075 + cloudPosition1X, 670, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1000 + cloudPosition1X, 668, 0);
+  glutSolidSphere(18,100,50);
+  glPopMatrix();
+ 
+
+//straight road
+glColor3f(0.4,0.4,0.45);
+ glBegin(GL_POLYGON);
+glVertex2f(0,200);
+glVertex2f(1500,200);
+glVertex2f(1500,400);
+ glVertex2f(0,400);
+  glEnd();
+ 
+
+ 
+ 
+  //white1 on road
+  glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(0, 280);
+glVertex2f(350, 280);
+glVertex2f(350, 300);
+glVertex2f(0, 300);
+glEnd();
+
+//white2 on road
+  glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(550, 280);
+glVertex2f(900, 280);
+glVertex2f(900, 300);
+glVertex2f(550, 300);
+glEnd();
+
+
+//white3 on road
+  glColor3f(1.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(1100, 280);
+glVertex2f(1500, 280);
+glVertex2f(1500, 300);
+glVertex2f(1100, 300);
+glEnd();
+  //void mud polygon ()
+
+glColor4f(0.7,0.6,0.1,0.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,0);
+glVertex2f(1500,0);
+glVertex2f(1500,200);
+ glVertex2f(0,200);
+  glEnd();
+ 
+ 
+ 
+    glColor3f(0.0,0.0,0.0);//crossing the lane can cause accident
+glPushMatrix();
+//glTranslatef(550,600,0.0);
+glTranslatef(10,100,0.0);
+glScalef(0.30,0.30,0);
+output("CROSSING THE LANE ON A ONE-WAY CAN CAUSE ACCIDENTS");
+glPopMatrix();
+ 
+ 
+ 
+ 
+  glColor3f(0.0,1.0,0.0); //bush green1
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+  glutSolidSphere(30,100,50);
+ glTranslatef(170 , 10, 0);
+  glPopMatrix();
+   glPushMatrix();
+  glutSolidSphere(30,100,50);
+ glTranslatef(220 , 10, 0);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(270 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(320 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(250 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(295 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(220 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();//egde bush
+  glTranslatef(5 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+ 
+  glPushMatrix();
+  glTranslatef(25 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+
+ 
+    glColor3f(0.0,1.0,0.0); //bush green2
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(30,100,50);
+ glTranslatef(450 , 10, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(500 , 15, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(550 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(600 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(525 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(575 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+ 
+    glColor3f(0.0,1.0,0.0); //bush green3
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(30,100,50);
+ glTranslatef(950, 10, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(850, 15, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(900,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(950 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(800,10, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(925 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+    glColor3f(0.0,1.0,0.0); //bush green4
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glPushMatrix();
+ 
+  glutSolidSphere(30,100,50);
+ glTranslatef(1350 , 10, 0);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1200 , 15, 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1250 ,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1300,10 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1225 ,35 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glPushMatrix();
+  glTranslatef(1275 ,40 , 0);
+  glutSolidSphere(30,100,50);
+  glPopMatrix();
+  glEnd();
+ 
+ 
+ 
+ 
+//side of the road
+  glColor3f(0.0,0.0,0.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,170);
+glVertex2f(1500,170);
+glVertex2f(1500,200);
+ glVertex2f(0,200);
+  glEnd();
+ 
+     
+//side of the road
+  glColor3f(0.0,0.0,0.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,400);
+glVertex2f(1500,400);
+glVertex2f(1500,430);
+ glVertex2f(0,430);
+  glEnd();
+ 
+ 
+ 
+  //footpath black and white
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,170);
+glVertex2f(100,170);
+glVertex2f(100,200);
+ glVertex2f(0,200);
+  glEnd();
+ 
+ 
+ 
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(200,170);
+glVertex2f(300,170);
+glVertex2f(300,200);
+ glVertex2f(200,200);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(400,170);
+glVertex2f(500,170);
+glVertex2f(500,200);
+ glVertex2f(400,200);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(600,170);
+glVertex2f(700,170);
+glVertex2f(700,200);
+ glVertex2f(600,200);
+  glEnd();
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(800,170);
+glVertex2f(900,170);
+glVertex2f(900,200);
+ glVertex2f(800,200);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1000,170);
+glVertex2f(1100,170);
+glVertex2f(1100,200);
+ glVertex2f(1000,200);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1200,170);
+glVertex2f(1346,170);
+glVertex2f(1346,200);
+ glVertex2f(1200,200);
+  glEnd();
+ 
+ 
+   //footpath black and white top
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(0,400);
+glVertex2f(100,400);
+glVertex2f(100,430);
+ glVertex2f(0,430);
+  glEnd();
+ 
+ 
+ 
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(200,400);
+glVertex2f(300,400);
+glVertex2f(300,430);
+ glVertex2f(200,430);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(400,400);
+glVertex2f(500,400);
+glVertex2f(500,430);
+ glVertex2f(400,430);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(600,400);
+glVertex2f(700,400);
+glVertex2f(700,430);
+ glVertex2f(600,430);
+  glEnd();
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(800,400);
+glVertex2f(900,400);
+glVertex2f(900,430);
+ glVertex2f(800,430);
+  glEnd();
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1000,400);
+glVertex2f(1100,400);
+glVertex2f(1100,430);
+ glVertex2f(1000,430);
+  glEnd();
+ 
+ 
+ 
+   
+   glColor3f(1.0,1.0,1.0);
+   glBegin(GL_POLYGON);
+   
+glVertex2f(1200,400);
+glVertex2f(1346,400);
+glVertex2f(1346,430);
+ glVertex2f(1200,430);
+  glEnd();
+ 
+ 
+ 
+
+   //void signal()
+//{
+glPushMatrix();
+glScaled(40.0, 40.0, 0.0);
+//stand
+glColor3f(0.6, 0.1, 0.4);
+glBegin(GL_POLYGON);
+glVertex2f(10, 10);
+glVertex2f(10, 11);
+glVertex2f(13, 11);
+glVertex2f(13, 10);
+glEnd();
+//pole
+glBegin(GL_POLYGON);
+glVertex2f(11, 10);
+glVertex2f(12, 10);
+glVertex2f(12, 18);
+glVertex2f(11, 18);
+glEnd();
+//board
+glBegin(GL_POLYGON);
+glVertex2f(10.5, 18);
+glVertex2f(12.5, 18);
+glVertex2f(12.5, 13);
+glVertex2f(10.5, 13);
+glEnd();
+//red
+glColor3f(0.0, 0.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(11, 17.5);
+glVertex2f(12, 17.5);
+glVertex2f(12, 17);
+glVertex2f(11, 17);
+glEnd();
+//yellow
+glColor3f(0.0, 0.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(11, 16.5);
+glVertex2f(12, 16.5);
+glVertex2f(12, 16);
+glVertex2f(11, 16);
+glEnd();
+//green
+glColor3f(0.0, 1.0, 0.0);
+glBegin(GL_POLYGON);
+glVertex2f(11, 15.5);
+glVertex2f(12, 15.5);
+glVertex2f(12, 15);
+glVertex2f(11, 15);
+glEnd();
+glPopMatrix();
+glEnd();
+
+   displaycar3(xcar);
+  bus3(xbus);
+
+
+if(xcar==420)
+      smoke();
+   
+   
+   glEnd();
+   glutSwapBuffers();
+
+}
+void sixth(){
+glBegin(GL_POLYGON);
+glColor3f(1.0, 0.8, 0.9);
+glVertex2f(0,0);
+glColor3f(1.0,1.0,1.0);
+glVertex2f(1346,0);
+glColor3f(1.0, 0.8, 0.9);
+glVertex2f(1346,728);
+glColor3f(1.0,1.0,1.0);
+glVertex2f(0,728);
+glEnd();
+glColor3f(0.0,0.0,0.0);
+glPushMatrix();
+glTranslatef(130.0,350.0,0.0);
+glScalef(1.4,1.2,0.0);
+
+output("THANK YOU");
+glPopMatrix();
+
+glEnd();
+
+
+   glutSwapBuffers();
+}
+void display()
+{
+glClear(GL_COLOR_BUFFER_BIT);
+if(slide==0)
+{
+first();
+glutPostRedisplay();
+}
+if(slide==1)
+{
+second();
+glutPostRedisplay();
+}
+if(slide==2)
+{
+third();
+glutPostRedisplay();
+}
+if(slide==3)
+{
+fourth();
+glutPostRedisplay();
+}
+if(slide==4)
+{
+fifth();
+glutPostRedisplay();
+}
+if(slide==5)
+{
+sixth();
+glutPostRedisplay();
+}
+}
+void key(unsigned char key,int x,int y)
+{
+if(key=='A'||key=='a')
+{
+slide=0;
+glutPostRedisplay();
+}
+if(key=='B'||key=='b')
+{
+slide=1;
+glutPostRedisplay();
+}
+if(key=='C'||key=='c')
+{
+slide=2;
+glutPostRedisplay();
+}
+if(key=='D'||key=='d')
+{
+   manPosition1X = 0.0f;
+slide=3;
+glutPostRedisplay();
+}
+if(key=='E'||key=='e')
+{
+xcar=0;
+xbus=0;
+slide=4;
+glutPostRedisplay();
+}
+if(key=='F'||key=='f')
+{
+slide=5;
+glutPostRedisplay();
+}
+}
+int main(int argc, char* argv[])
+{
+glutInit(&argc, argv);
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+glutInitWindowSize(1500, 850);
+glutInitWindowPosition(0, 0);
+glutCreateWindow("traffic signal");
+
+glClearColor(1.0,1.0,1.0,0.0);
+
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+
+glOrtho(0.0, 1346.0, 0.0, 728.0,0.0,500.0);
+glutDisplayFunc(display);
+glutKeyboardFunc(key);
+glutMouseFunc(myMouse);
+timer1(0);
+timer2(0);
+timer3(0);
+timer6(0);
+glutTimerFunc(0, update, 0);//smoke
+
+glutTimerFunc(100, update2, 0);//crash cloud
+
+timer4(0);
+timer5(0);
+glutTimerFunc( 100,update3, 0);//cloud
+glutTimerFunc( 100,update4, 0);//man moving
+
+
+   
+glutMainLoop();
+return 0;
+}
